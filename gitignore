@@ -1,0 +1,7 @@
+# Dati reali dei clienti: non vanno mai pubblicati
+tenants.json
+*.local.json
+
+# Varie
+Thumbs.db
+.vscode/
