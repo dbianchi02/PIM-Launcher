@@ -44,6 +44,8 @@ Unblock-File .\PIM-Launcher.ps1, .\tenants.json
 
 > `tenants.json` contiene i dati dei tuoi clienti ed è escluso dalla repository tramite `.gitignore`. Non committarlo.
 
+<img width="856" height="640" alt="image" src="https://github.com/user-attachments/assets/a5ec1389-0bfa-425d-b5c4-ed0899e862af" />
+
 ## Configurazione
 
 `tenants.json` ha una parte globale e l'elenco dei clienti.
@@ -78,7 +80,7 @@ Gli URL dei portali possono contenere questi segnaposto, sostituiti con i dati d
 
 ### Trovare la cartella del profilo Edge
 
-I profili sono in `%LOCALAPPDATA%\Microsoft\Edge\User Data`. Per elencarli con l'account associato:
+I profili sono in `%LOCALAPPDATA%\Microsoft\Edge\User Data`. Per elencarli con l'account associato si può utilizzare PowerShell:
 
 ```powershell
 $ls = Get-Content "$env:LOCALAPPDATA\Microsoft\Edge\User Data\Local State" -Raw | ConvertFrom-Json -AsHashtable
