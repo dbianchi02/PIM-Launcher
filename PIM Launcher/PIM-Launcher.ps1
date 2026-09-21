@@ -70,73 +70,260 @@ public class RoleRow {
 [xml]$xaml = @'
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="PIM Launcher" Width="880" Height="740" MinWidth="720" MinHeight="600"
-        WindowStartupLocation="CenterScreen" FontFamily="Segoe UI" FontSize="13">
-  <Grid Margin="12">
+        Title="PIM Launcher" Width="900" Height="780" MinWidth="760" MinHeight="640"
+        WindowStartupLocation="CenterScreen" FontFamily="Segoe UI" FontSize="13"
+        Background="#F3F4F6" Foreground="#1F2937">
+  <Window.Resources>
+
+    <!-- Pulsanti: angoli arrotondati, hover e stato disabilitato -->
+    <Style x:Key="BaseButton" TargetType="Button">
+      <Setter Property="Background" Value="White"/>
+      <Setter Property="Foreground" Value="#1F2937"/>
+      <Setter Property="BorderBrush" Value="#D1D5DB"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Padding" Value="14,6"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="bd" Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="6" Padding="{TemplateBinding Padding}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="bd" Property="Opacity" Value="0.85"/>
+              </Trigger>
+              <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="bd" Property="Opacity" Value="0.7"/>
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.45"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource BaseButton}"/>
+    <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+      <Setter Property="Background" Value="#0F6CBD"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="BorderBrush" Value="#0F6CBD"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <!-- Campi di input -->
+    <Style TargetType="TextBox">
+      <Setter Property="Padding" Value="6,4"/>
+      <Setter Property="BorderBrush" Value="#D1D5DB"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    <Style TargetType="ComboBox">
+      <Setter Property="Height" Value="30"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Testi -->
+    <Style x:Key="MutedLabel" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="#6B7280"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style x:Key="SectionTitle" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="11"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Foreground" Value="#6B7280"/>
+      <Setter Property="Margin" Value="0,0,0,8"/>
+    </Style>
+
+    <!-- Card -->
+    <Style x:Key="Card" TargetType="Border">
+      <Setter Property="Background" Value="White"/>
+      <Setter Property="BorderBrush" Value="#E5E7EB"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Padding" Value="14"/>
+      <Setter Property="Margin" Value="0,0,0,10"/>
+    </Style>
+
+    <!-- Griglia dei ruoli -->
+    <Style x:Key="GridHeader" TargetType="DataGridColumnHeader">
+      <Setter Property="Background" Value="#F9FAFB"/>
+      <Setter Property="Foreground" Value="#6B7280"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Padding" Value="10,8"/>
+      <Setter Property="BorderBrush" Value="#E5E7EB"/>
+      <Setter Property="BorderThickness" Value="0,0,0,1"/>
+    </Style>
+    <Style x:Key="GridRow" TargetType="DataGridRow">
+      <Setter Property="Background" Value="White"/>
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="Background" Value="#F5F9FF"/>
+        </Trigger>
+        <Trigger Property="IsSelected" Value="True">
+          <Setter Property="Background" Value="#E8F1FB"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="GridCell" TargetType="DataGridCell">
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+      <Style.Triggers>
+        <Trigger Property="IsSelected" Value="True">
+          <Setter Property="Background" Value="Transparent"/>
+          <Setter Property="BorderBrush" Value="Transparent"/>
+          <Setter Property="Foreground" Value="#1F2937"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="CellText" TargetType="TextBlock">
+      <Setter Property="VerticalAlignment" Value="Center"/>
+      <Setter Property="Margin" Value="10,0"/>
+      <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+    </Style>
+    <Style x:Key="StateText" TargetType="TextBlock" BasedOn="{StaticResource CellText}">
+      <Setter Property="Foreground" Value="#6B7280"/>
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding IsActive}" Value="True">
+          <Setter Property="Foreground" Value="#107C10"/>
+          <Setter Property="FontWeight" Value="SemiBold"/>
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+
+  </Window.Resources>
+
+  <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto"/>
-      <RowDefinition Height="*" MinHeight="140"/>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="150"/>
+      <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
 
-    <DockPanel Grid.Row="0" Margin="0,0,0,8">
-      <TextBlock Text="Cliente" VerticalAlignment="Center" Margin="0,0,8,0"/>
-      <ComboBox x:Name="cmbTenant" Width="260"/>
-      <Button x:Name="btnConnect" Content="Connetti" Margin="8,0,0,0" Padding="14,4"/>
-      <TextBlock x:Name="lblAccount" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="Gray"/>
-    </DockPanel>
+    <!-- Intestazione -->
+    <Border Grid.Row="0" Background="#10253F" Padding="20,14">
+      <StackPanel>
+        <TextBlock Text="PIM Launcher" FontSize="20" FontWeight="SemiBold" Foreground="White"/>
+        <TextBlock Text="Attiva i ruoli Entra ID e apri i portali con una sessione già aggiornata"
+                   FontSize="12" Foreground="#A9BCD0" Margin="0,2,0,0"/>
+      </StackPanel>
+    </Border>
 
-    <DataGrid x:Name="grid" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False"
-              HeadersVisibility="Column" GridLinesVisibility="Horizontal" SelectionMode="Single">
-      <DataGrid.Columns>
-        <DataGridCheckBoxColumn Header="" Width="34"
-            Binding="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-        <DataGridTextColumn Header="Ruolo"  Binding="{Binding Role}"  IsReadOnly="True" Width="2*"/>
-        <DataGridTextColumn Header="Scope" Binding="{Binding Scope}" IsReadOnly="True" Width="*"/>
-        <DataGridTextColumn Header="Status"  Binding="{Binding State}" IsReadOnly="True" Width="*"/>
-      </DataGrid.Columns>
-    </DataGrid>
+    <Grid Grid.Row="1" Margin="16,14,16,16">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*" MinHeight="140"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="130"/>
+      </Grid.RowDefinitions>
 
-    <Grid Grid.Row="2" Margin="0,8,0,0">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/>
-        <ColumnDefinition Width="Auto"/><ColumnDefinition Width="70"/>
-        <ColumnDefinition Width="Auto"/><ColumnDefinition Width="120"/>
-      </Grid.ColumnDefinitions>
-      <TextBlock Text="Giustificazione" VerticalAlignment="Center" Margin="0,0,6,0"/>
-      <TextBox x:Name="txtJust" Grid.Column="1" Padding="3"/>
-      <TextBlock Text="Ore" Grid.Column="2" VerticalAlignment="Center" Margin="10,0,6,0"/>
-      <ComboBox x:Name="cmbDur" Grid.Column="3">
-        <ComboBoxItem Content="1"/><ComboBoxItem Content="2"/>
-        <ComboBoxItem Content="4"/><ComboBoxItem Content="8"/>
-      </ComboBox>
-      <TextBlock Text="Ticket" Grid.Column="4" VerticalAlignment="Center" Margin="10,0,6,0"/>
-      <TextBox x:Name="txtTicket" Grid.Column="5" Padding="3"/>
+      <!-- Cliente -->
+      <Border Grid.Row="0" Style="{StaticResource Card}">
+        <DockPanel>
+          <TextBlock Text="Cliente" Style="{StaticResource MutedLabel}" Margin="0,0,10,0"/>
+          <ComboBox x:Name="cmbTenant" Width="280"/>
+          <Button x:Name="btnConnect" Content="Connetti" Margin="10,0,0,0" Style="{StaticResource PrimaryButton}"/>
+          <TextBlock x:Name="lblAccount" Style="{StaticResource MutedLabel}" Margin="14,0,0,0"/>
+        </DockPanel>
+      </Border>
+
+      <!-- Ruoli -->
+      <Border Grid.Row="1" Style="{StaticResource Card}" Padding="0">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+          </Grid.RowDefinitions>
+          <TextBlock Text="RUOLI ELEGGIBILI" Style="{StaticResource SectionTitle}" Margin="14,12,14,8"/>
+          <DataGrid x:Name="grid" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False"
+                    CanUserResizeRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                    HorizontalGridLinesBrush="#EEF0F3" BorderBrush="#E5E7EB" BorderThickness="0,1,0,0"
+                    Background="White" RowHeight="34" SelectionMode="Single"
+                    ColumnHeaderStyle="{StaticResource GridHeader}"
+                    RowStyle="{StaticResource GridRow}" CellStyle="{StaticResource GridCell}">
+            <DataGrid.Columns>
+              <DataGridTemplateColumn Header="" Width="44">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center"
+                              IsChecked="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                      <CheckBox.Style>
+                        <Style TargetType="CheckBox">
+                          <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsActive}" Value="True">
+                              <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                          </Style.Triggers>
+                        </Style>
+                      </CheckBox.Style>
+                    </CheckBox>
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+              </DataGridTemplateColumn>
+              <DataGridTextColumn Header="Ruolo"  Binding="{Binding Role}"  IsReadOnly="True" Width="2*" ElementStyle="{StaticResource CellText}"/>
+              <DataGridTextColumn Header="Scope" Binding="{Binding Scope}" IsReadOnly="True" Width="*"  ElementStyle="{StaticResource CellText}"/>
+              <DataGridTextColumn Header="Status"  Binding="{Binding State}" IsReadOnly="True" Width="*"  ElementStyle="{StaticResource StateText}"/>
+            </DataGrid.Columns>
+          </DataGrid>
+        </Grid>
+      </Border>
+
+      <!-- Attivazione -->
+      <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,10,0,10">
+        <StackPanel>
+          <TextBlock Text="ATTIVAZIONE" Style="{StaticResource SectionTitle}"/>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="Auto"/><ColumnDefinition Width="70"/>
+              <ColumnDefinition Width="Auto"/><ColumnDefinition Width="120"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Giustificazione" Style="{StaticResource MutedLabel}" Margin="0,0,8,0"/>
+            <TextBox x:Name="txtJust" Grid.Column="1" Height="30"/>
+            <TextBlock Text="Ore" Grid.Column="2" Style="{StaticResource MutedLabel}" Margin="12,0,8,0"/>
+            <ComboBox x:Name="cmbDur" Grid.Column="3">
+              <ComboBoxItem Content="1"/><ComboBoxItem Content="2"/>
+              <ComboBoxItem Content="4"/><ComboBoxItem Content="8"/>
+            </ComboBox>
+            <TextBlock Text="Ticket" Grid.Column="4" Style="{StaticResource MutedLabel}" Margin="12,0,8,0"/>
+            <TextBox x:Name="txtTicket" Grid.Column="5" Height="30"/>
+          </Grid>
+          <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+            <Button x:Name="btnActivate" Content="Attiva selezionati" Style="{StaticResource PrimaryButton}"/>
+            <Button x:Name="btnRefresh" Content="Aggiorna" Margin="8,0,0,0"/>
+            <CheckBox x:Name="chkAutoOpen" Content="Dopo l'attivazione apri i portali" IsChecked="True"
+                      VerticalAlignment="Center" Margin="16,0,0,0"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <!-- Portali -->
+      <Border Grid.Row="3" Style="{StaticResource Card}">
+        <StackPanel>
+          <TextBlock Text="PORTALI" Style="{StaticResource SectionTitle}"/>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Sessione browser" Style="{StaticResource MutedLabel}" Margin="0,0,8,0"/>
+            <ComboBox x:Name="cmbMode" Width="220" SelectedIndex="2">
+              <ComboBoxItem Content="Isolata e nuova"/>
+              <ComboBoxItem Content="InPrivate"/>
+              <ComboBoxItem Content="Profilo Edge del cliente"/>
+            </ComboBox>
+            <Button x:Name="btnOpenAll" Content="Apri tutti i portali" Margin="8,0,0,0"/>
+          </StackPanel>
+          <WrapPanel x:Name="pnlPortals" Margin="0,10,0,0"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Log -->
+      <Border Grid.Row="4" CornerRadius="8" Background="#0F172A" Padding="6">
+        <TextBox x:Name="txtLog" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                 Background="Transparent" Foreground="#D1D5DB" BorderThickness="0"
+                 FontFamily="Consolas" FontSize="12" VerticalContentAlignment="Top"/>
+      </Border>
     </Grid>
-
-    <StackPanel Grid.Row="3" Margin="0,10,0,8">
-      <StackPanel Orientation="Horizontal">
-        <Button x:Name="btnActivate" Content="Attiva selezionati" Padding="14,5" FontWeight="SemiBold"/>
-        <Button x:Name="btnRefresh" Content="Aggiorna" Padding="14,5" Margin="8,0,0,0"/>
-        <CheckBox x:Name="chkAutoOpen" Content="Dopo l'attivazione apri i portali" IsChecked="True"
-                  VerticalAlignment="Center" Margin="16,0,0,0"/>
-      </StackPanel>
-      <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-        <TextBlock Text="Sessione browser" VerticalAlignment="Center" Margin="0,0,8,0"/>
-        <ComboBox x:Name="cmbMode" Width="220" SelectedIndex="2">
-          <ComboBoxItem Content="Isolata e nuova"/>
-          <ComboBoxItem Content="InPrivate"/>
-          <ComboBoxItem Content="Profilo Edge del cliente"/>
-        </ComboBox>
-        <Button x:Name="btnOpenAll" Content="Apri tutti i portali" Padding="12,4" Margin="8,0,0,0"/>
-      </StackPanel>
-      <WrapPanel x:Name="pnlPortals" Margin="0,8,0,0"/>
-    </StackPanel>
-
-    <TextBox x:Name="txtLog" Grid.Row="4" IsReadOnly="True" TextWrapping="Wrap"
-             VerticalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="12"/>
   </Grid>
 </Window>
 '@
@@ -210,7 +397,7 @@ function Update-Roles {
              Select-Object -First 1
         $row = [RoleRow]::new()
         $row.Role = $e.roleDefinition.displayName
-        $row.Scope = if ($e.directoryScopeId -eq '/') { 'Tenant' } else { $e.directoryScopeId }
+        $row.Scope = if ($e.directoryScopeId -eq '/') { 'Intero tenant' } else { $e.directoryScopeId }
         $row.RoleDefinitionId = $e.roleDefinitionId
         $row.DirectoryScopeId = $e.directoryScopeId
         if ($a) {
