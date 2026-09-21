@@ -2,7 +2,7 @@
 
 GUI in PowerShell per attivare i ruoli **Microsoft Entra ID PIM** sui tenant dei clienti e aprire subito i portali di amministrazione con una sessione browser che contiene il ruolo appena attivato.
 
-<!-- ![Screenshot](docs/screenshot.png) -->
+<img width="1919" height="1030" alt="image" src="https://github.com/user-attachments/assets/de3a912e-80dc-4517-8dce-86f6efb744b1" />
 
 ## Perché
 
@@ -43,8 +43,6 @@ Unblock-File .\PIM-Launcher.ps1, .\tenants.json
 3. Scegli il cliente, premi **Connetti**, spunta i ruoli, inserisci la giustificazione e premi **Attiva selezionati**.
 
 > `tenants.json` contiene i dati dei tuoi clienti ed è escluso dalla repository tramite `.gitignore`. Non committarlo.
-
-<img width="856" height="640" alt="image" src="https://github.com/user-attachments/assets/a5ec1389-0bfa-425d-b5c4-ed0899e862af" />
 
 ## Configurazione
 
