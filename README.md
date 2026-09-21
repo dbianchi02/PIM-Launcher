@@ -101,8 +101,6 @@ Scope delegati richiesti: `RoleManagement.ReadWrite.Directory` e `User.Read`.
 
 In un tenant cliente potrebbe servire il **consenso amministratore** per l'app *Microsoft Graph Command Line Tools*, oppure puoi registrare una tua app e indicarne l'ID in `ClientId`.
 
-`RoleManagement.ReadWrite.Directory` è più ampio del necessario: la documentazione Microsoft indica `RoleAssignmentSchedule.ReadWrite.Directory` come permesso meno privilegiato per attivare i ruoli. Puoi provare a sostituire la riga `$Scopes` nello script con `RoleAssignmentSchedule.ReadWrite.Directory`, `RoleEligibilitySchedule.Read.Directory` e `User.Read`. Questa combinazione non è stata testata: se la lettura dei ruoli fallisce, aggiungi `RoleManagement.Read.Directory`.
-
 ## Limiti noti
 
 - Gestisce solo i **ruoli Entra ID**: non ruoli delle risorse Azure né PIM for Groups.
