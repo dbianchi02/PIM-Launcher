@@ -1,0 +1,33 @@
+{
+  "ClientId": "",
+  "DefaultJustification": "Attività di amministrazione ordinaria",
+  "DefaultDurationHours": 4,
+  "Portals": [
+    { "Name": "Entra",       "Url": "https://entra.microsoft.com/#@{tenantId}" },
+    { "Name": "M365 Admin",  "Url": "https://admin.microsoft.com/?login_hint={upn}" },
+    { "Name": "Defender",    "Url": "https://security.microsoft.com/?tid={tenantId}" },
+    { "Name": "Purview",     "Url": "https://purview.microsoft.com/" },
+    { "Name": "Exchange",    "Url": "https://admin.exchange.microsoft.com/" },
+    { "Name": "Teams",       "Url": "https://admin.teams.microsoft.com/" },
+    { "Name": "SharePoint",  "Url": "https://{spo}-admin.sharepoint.com/" },
+    { "Name": "Azure",       "Url": "https://portal.azure.com/#@{tenantId}" }
+  ],
+  "Tenants": [
+    {
+      "Name": "Cliente Alfa",
+      "TenantId": "00000000-0000-0000-0000-000000000001",
+      "Upn": "admin@alfa.onmicrosoft.com",
+      "Spo": "alfa",
+      "EdgeProfile": "Profile 1",
+      "PortalNames": ["Entra", "M365 Admin", "Defender", "Purview", "Exchange", "Teams", "SharePoint"]
+    },
+    {
+      "Name": "Cliente Beta",
+      "TenantId": "00000000-0000-0000-0000-000000000002",
+      "Upn": "admin@beta.it",
+      "Spo": "beta",
+      "EdgeProfile": "Profile 2",
+      "PortalNames": ["Entra", "Purview", "Exchange"]
+    }
+  ]
+}
