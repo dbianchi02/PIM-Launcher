@@ -32,8 +32,10 @@ Install-Module Microsoft.Graph.Authentication -Scope CurrentUser
 
 ## Avvio
 
-1. Copia `tenants.example.json` in `tenants.json` (stessa cartella dello script) e compilalo.
-2. Da una console PowerShell 7:
+> `PIM-Launcher.ps1` e `tenants.json` devono stare nella **stessa cartella**: lo script cerca `tenants.json` accanto a sé. Se preferisci tenerlo altrove, avvia con `.\PIM-Launcher.ps1 -ConfigPath C:\percorso\tenants.json`.
+
+1. Copia `tenants.example.json` in `tenants.json`, nella stessa cartella dello script, e compilalo con i tuoi clienti.
+2. Da una console PowerShell 7, nella cartella dei due file:
 
 ```powershell
 Unblock-File .\PIM-Launcher.ps1, .\tenants.json
@@ -78,7 +80,7 @@ Gli URL dei portali possono contenere questi segnaposto, sostituiti con i dati d
 
 ### Trovare la cartella del profilo Edge
 
-I profili sono in `%LOCALAPPDATA%\Microsoft\Edge\User Data`. Per elencarli con l'account associato si può utilizzare PowerShell:
+I profili sono in `%LOCALAPPDATA%\Microsoft\Edge\User Data`. Per elencarli con l'account associato:
 
 ```powershell
 $ls = Get-Content "$env:LOCALAPPDATA\Microsoft\Edge\User Data\Local State" -Raw | ConvertFrom-Json -AsHashtable
@@ -89,7 +91,7 @@ $ls.profile.info_cache.GetEnumerator() | ForEach-Object { '{0}  ->  {1}  ({2})' 
 
 | Modalità | Comportamento |
 |---|---|
-| **Profilo Edge del cliente** (predefinita) | Apre Edge nel profilo indicato in `EdgeProfile`. Comodo per l'SSO, ma il portale può riusare un token vecchio: in quel caso serve un sign-out manuale |
+| **Profilo Edge del cliente** (predefinita) | Apre Edge nel profilo indicato in `EdgeProfile`. Comodo per l'SSO, ma attenzione perchè il portale potrebbe riusare un token vecchio: in quel caso serve un sign-out manuale |
 | **Isolata e nuova** | Edge parte con un profilo temporaneo vuoto in `%TEMP%\PIMLauncher` (rimosso dopo un giorno). Token sempre nuovo, login da rifare ogni volta |
 | **InPrivate** | Finestra InPrivate. Le finestre InPrivate condividono la stessa sessione: chiudi le precedenti prima di cambiare cliente |
 
@@ -101,12 +103,14 @@ Scope delegati richiesti: `RoleManagement.ReadWrite.Directory` e `User.Read`.
 
 In un tenant cliente potrebbe servire il **consenso amministratore** per l'app *Microsoft Graph Command Line Tools*, oppure puoi registrare una tua app e indicarne l'ID in `ClientId`.
 
+## Provato sul campo
+
+Ruoli Teams e SharePoint attivati e verificati al primo tentativo, con i portali aperti in modalità **Profilo Edge del cliente**.
+
 ## Limiti noti
 
 - Gestisce solo i **ruoli Entra ID**: non ruoli delle risorse Azure né PIM for Groups.
-- **Step-up non gestito**: se la policy del ruolo richiede un authentication context o un MFA fresco, l'attivazione fallisce e il log lo segnala.
 - I ruoli che richiedono **approvazione** vengono inviati e segnati come in attesa, senza altro.
-- Exchange, SharePoint e Teams possono impiegare diversi minuti a propagare il ruolo: nessun token nuovo lo accelera.
 - Alcuni portali non accettano parametri di tenant o utente nell'URL: modifica `Portals` nel JSON se un link non si comporta come previsto.
 - Solo Windows e solo Edge.
 
